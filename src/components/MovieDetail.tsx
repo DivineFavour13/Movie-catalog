@@ -24,6 +24,7 @@ import {
 } from "@/lib/tmdb";
 import type { MovieDetails, Credits, Movie, Video } from "@/types/movie";
 import { MovieList } from "./MovieList";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface MovieDetailProps {
   movieId: number;
@@ -32,6 +33,7 @@ interface MovieDetailProps {
 }
 
 export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps) {
+  const { language } = useLanguage();
   const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [credits, setCredits] = useState<Credits | null>(null);
   const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
@@ -45,10 +47,10 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
       setError(null);
       try {
         const [movieData, creditsData, videosData, similarData] = await Promise.all([
-          getMovieDetails(movieId),
+          getMovieDetails(movieId, language),
           getMovieCredits(movieId),
-          getMovieVideos(movieId),
-          getSimilarMovies(movieId),
+          getMovieVideos(movieId, language),
+          getSimilarMovies(movieId, 1, language),
         ]);
         setMovie(movieData);
         setCredits(creditsData);
@@ -74,7 +76,7 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
 
     fetchMovieData();
     window.scrollTo(0, 0);
-  }, [movieId]);
+  }, [movieId, language]);
 
   const formatRuntime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
@@ -93,7 +95,7 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "TBA";
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString(language, {
       year: "numeric",
       month: "long",
       day: "numeric",

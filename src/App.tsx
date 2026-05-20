@@ -22,6 +22,7 @@ import {
   searchMovies,
 } from "@/lib/tmdb";
 import type { Movie } from "@/types/movie";
+import { useLanguage } from "@/hooks/useLanguage";
 
 type Category = "popular" | "top-rated" | "upcoming" | "now-playing";
 
@@ -31,6 +32,7 @@ type ViewState =
   | { type: "detail"; movieId: number };
 
 function App() {
+  const { language } = useLanguage();
   const [view, setView] = useState<ViewState>({ type: "home", category: "popular" });
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,22 +54,22 @@ function App() {
       let response;
 
       if (view.type === "search") {
-        response = await searchMovies(view.query, currentPage);
+        response = await searchMovies(view.query, currentPage, language);
       } else {
         const category = getCategoryFromView(view);
         switch (category) {
           case "top-rated":
-            response = await getTopRatedMovies(currentPage);
+            response = await getTopRatedMovies(currentPage, language);
             break;
           case "upcoming":
-            response = await getUpcomingMovies(currentPage);
+            response = await getUpcomingMovies(currentPage, language);
             break;
           case "now-playing":
-            response = await getNowPlayingMovies(currentPage);
+            response = await getNowPlayingMovies(currentPage, language);
             break;
           case "popular":
           default:
-            response = await getPopularMovies(currentPage);
+            response = await getPopularMovies(currentPage, language);
             break;
         }
       }
@@ -81,7 +83,7 @@ function App() {
     } finally {
       setIsLoading(false);
     }
-  }, [view, currentPage]);
+  }, [view, currentPage, language]);
 
   useEffect(() => {
     fetchMovies();
@@ -89,7 +91,7 @@ function App() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [view]);
+  }, [view, language]);
 
   const handleSearch = (query: string) => {
     if (query.trim()) {

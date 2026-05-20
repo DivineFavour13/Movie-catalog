@@ -6,6 +6,8 @@ import type { Movie } from "@/types/movie";
 import { Search, Film, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSelect } from "@/components/LanguageSelect";
+import { useLanguage } from "@/hooks/useLanguage";
 
 type NavigationPage = "home" | "popular" | "top-rated" | "upcoming";
 
@@ -112,6 +114,7 @@ export function Header({
   onNavigate,
   currentPage = "home",
 }: HeaderProps) {
+  const { language, languageOption } = useLanguage();
   const [localQuery, setLocalQuery] = useState(searchQuery);
   const [isScrolled, setIsScrolled] = useState(false);
   const [suggestions, setSuggestions] = useState<Movie[]>([]);
@@ -143,7 +146,7 @@ export function Header({
       setIsLoadingSuggestions(true);
 
       try {
-        const response = await searchMovies(query, 1);
+        const response = await searchMovies(query, 1, language);
         const uniqueSuggestions = response.results.filter(
           (movie, index, results) =>
             index === results.findIndex((item) => item.title === movie.title)
@@ -159,7 +162,7 @@ export function Header({
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [localQuery]);
+  }, [localQuery, language]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -253,8 +256,8 @@ export function Header({
           inputClassName="pl-9 w-full"
         />
 
-        {/* Theme Toggle */}
-        <div className="hidden sm:block">
+        <div className="hidden sm:flex items-center gap-2">
+          <LanguageSelect compact />
           <ThemeToggle />
         </div>
 
@@ -275,6 +278,16 @@ export function Header({
                   </p>
                 </div>
                 <ThemeToggle />
+              </div>
+
+              <div className="flex flex-col gap-3 border-b pb-4">
+                <div>
+                  <p className="text-sm font-medium">Language</p>
+                  <p className="text-xs text-muted-foreground">
+                    Showing movie data in {languageOption.label}
+                  </p>
+                </div>
+                <LanguageSelect />
               </div>
 
               {/* Mobile Navigation */}

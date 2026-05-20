@@ -4,6 +4,7 @@ import type {
   Credits,
   VideosResponse,
 } from "@/types/movie";
+import type { LanguageCode } from "@/lib/languages";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -62,44 +63,61 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
 };
 
 export const getPopularMovies = async (
-  page: number = 1
+  page: number = 1,
+  language?: LanguageCode
 ): Promise<MovieResponse> => {
   const response = await fetch(
-    buildUrl("/movie/popular", { page: page.toString() })
+    buildUrl("/movie/popular", {
+      page: page.toString(),
+      ...(language ? { language } : {}),
+    })
   );
   return handleResponse<MovieResponse>(response);
 };
 
 export const getTopRatedMovies = async (
-  page: number = 1
+  page: number = 1,
+  language?: LanguageCode
 ): Promise<MovieResponse> => {
   const response = await fetch(
-    buildUrl("/movie/top_rated", { page: page.toString() })
+    buildUrl("/movie/top_rated", {
+      page: page.toString(),
+      ...(language ? { language } : {}),
+    })
   );
   return handleResponse<MovieResponse>(response);
 };
 
 export const getUpcomingMovies = async (
-  page: number = 1
+  page: number = 1,
+  language?: LanguageCode
 ): Promise<MovieResponse> => {
   const response = await fetch(
-    buildUrl("/movie/upcoming", { page: page.toString() })
+    buildUrl("/movie/upcoming", {
+      page: page.toString(),
+      ...(language ? { language } : {}),
+    })
   );
   return handleResponse<MovieResponse>(response);
 };
 
 export const getNowPlayingMovies = async (
-  page: number = 1
+  page: number = 1,
+  language?: LanguageCode
 ): Promise<MovieResponse> => {
   const response = await fetch(
-    buildUrl("/movie/now_playing", { page: page.toString() })
+    buildUrl("/movie/now_playing", {
+      page: page.toString(),
+      ...(language ? { language } : {}),
+    })
   );
   return handleResponse<MovieResponse>(response);
 };
 
 export const searchMovies = async (
   query: string,
-  page: number = 1
+  page: number = 1,
+  language?: LanguageCode
 ): Promise<MovieResponse> => {
   if (!query.trim()) {
     return { page: 1, results: [], total_pages: 0, total_results: 0 };
@@ -107,17 +125,21 @@ export const searchMovies = async (
   const response = await fetch(
     buildUrl("/search/movie", { 
       query: query.trim(),
-      page: page.toString() 
+      page: page.toString(),
+      ...(language ? { language } : {}),
     })
   );
   return handleResponse<MovieResponse>(response);
 };
 
 export const getMovieDetails = async (
-  movieId: number
+  movieId: number,
+  language?: LanguageCode
 ): Promise<MovieDetails> => {
   const response = await fetch(
-    buildUrl(`/movie/${movieId}`)
+    buildUrl(`/movie/${movieId}`, {
+      ...(language ? { language } : {}),
+    })
   );
   return handleResponse<MovieDetails>(response);
 };
@@ -130,40 +152,53 @@ export const getMovieCredits = async (movieId: number): Promise<Credits> => {
 };
 
 export const getMovieVideos = async (
-  movieId: number
+  movieId: number,
+  language?: LanguageCode
 ): Promise<VideosResponse> => {
   const response = await fetch(
-    buildUrl(`/movie/${movieId}/videos`)
+    buildUrl(`/movie/${movieId}/videos`, {
+      ...(language ? { language } : {}),
+    })
   );
   return handleResponse<VideosResponse>(response);
 };
 
 export const getSimilarMovies = async (
   movieId: number,
-  page: number = 1
+  page: number = 1,
+  language?: LanguageCode
 ): Promise<MovieResponse> => {
   const response = await fetch(
-    buildUrl(`/movie/${movieId}/similar`, { page: page.toString() })
+    buildUrl(`/movie/${movieId}/similar`, {
+      page: page.toString(),
+      ...(language ? { language } : {}),
+    })
   );
   return handleResponse<MovieResponse>(response);
 };
 
 export const getMoviesByGenre = async (
   genreId: number,
-  page: number = 1
+  page: number = 1,
+  language?: LanguageCode
 ): Promise<MovieResponse> => {
   const response = await fetch(
     buildUrl("/discover/movie", { 
       with_genres: genreId.toString(),
-      page: page.toString() 
+      page: page.toString(),
+      ...(language ? { language } : {}),
     })
   );
   return handleResponse<MovieResponse>(response);
 };
 
-export const getGenres = async (): Promise<{ genres: { id: number; name: string }[] }> => {
+export const getGenres = async (
+  language?: LanguageCode
+): Promise<{ genres: { id: number; name: string }[] }> => {
   const response = await fetch(
-    buildUrl("/genre/movie/list")
+    buildUrl("/genre/movie/list", {
+      ...(language ? { language } : {}),
+    })
   );
   return handleResponse<{ genres: { id: number; name: string }[] }>(response);
 };
