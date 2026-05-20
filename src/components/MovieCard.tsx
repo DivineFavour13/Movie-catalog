@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Star, Calendar } from "lucide-react";
 import { getImageUrl } from "@/lib/tmdb";
 import type { Movie } from "@/types/movie";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface MovieCardProps {
   movie: Movie;
@@ -10,12 +11,14 @@ interface MovieCardProps {
 }
 
 export function MovieCard({ movie, onClick }: MovieCardProps) {
+  const t = useTranslation();
+
   const handleClick = () => {
     onClick?.(movie.id);
   };
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return "TBA";
+    if (!dateString) return t.tba;
     const date = new Date(dateString);
     return date.getFullYear().toString();
   };

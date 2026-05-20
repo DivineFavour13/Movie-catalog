@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useTranslation } from "@/hooks/useTranslation";
 import { LANGUAGES, type LanguageCode } from "@/lib/languages";
 
 interface LanguageSelectProps {
@@ -15,6 +16,7 @@ interface LanguageSelectProps {
 
 export function LanguageSelect({ compact = false }: LanguageSelectProps) {
   const { language, setLanguage } = useLanguage();
+  const t = useTranslation();
 
   return (
     <Select
@@ -24,7 +26,7 @@ export function LanguageSelect({ compact = false }: LanguageSelectProps) {
       <SelectTrigger
         size="sm"
         className={compact ? "w-[104px]" : "w-[172px]"}
-        aria-label="Select movie language"
+        aria-label={t.language}
       >
         <Globe2 className="h-4 w-4" />
         <SelectValue />

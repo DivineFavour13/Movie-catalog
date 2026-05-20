@@ -25,6 +25,7 @@ import {
 import type { MovieDetails, Credits, Movie, Video } from "@/types/movie";
 import { MovieList } from "./MovieList";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface MovieDetailProps {
   movieId: number;
@@ -34,6 +35,7 @@ interface MovieDetailProps {
 
 export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps) {
   const { language } = useLanguage();
+  const t = useTranslation();
   const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [credits, setCredits] = useState<Credits | null>(null);
   const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
@@ -94,7 +96,7 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
   };
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return "TBA";
+    if (!dateString) return t.tba;
     return new Date(dateString).toLocaleDateString(language, {
       year: "numeric",
       month: "long",
@@ -126,11 +128,11 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <Film className="h-16 w-16 text-muted-foreground/50 mb-4" />
-        <h2 className="text-xl font-semibold mb-2">Failed to load movie</h2>
-        <p className="text-muted-foreground mb-4">{error || "Movie not found"}</p>
+        <h2 className="text-xl font-semibold mb-2">{t.failedToLoadMovie}</h2>
+        <p className="text-muted-foreground mb-4">{error || t.movieNotFound}</p>
         <Button onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Go Back
+          {t.goBack}
         </Button>
       </div>
     );
@@ -177,7 +179,7 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
                 className="mb-4 -ml-2"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back
+                {t.back}
               </Button>
 
               <h1 className="text-3xl md:text-5xl font-bold mb-2">{movie.title}</h1>
@@ -196,7 +198,7 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
                     {movie.vote_average.toFixed(1)}
                   </span>
                   <span className="text-muted-foreground">
-                    ({movie.vote_count.toLocaleString()} votes)
+                    ({movie.vote_count.toLocaleString()} {t.votes})
                   </span>
                 </Badge>
 
@@ -230,9 +232,9 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
 
             {/* Overview */}
             <div>
-              <h2 className="text-xl font-semibold mb-2">Overview</h2>
+              <h2 className="text-xl font-semibold mb-2">{t.overview}</h2>
               <p className="text-muted-foreground leading-relaxed">
-                {movie.overview || "No overview available."}
+                {movie.overview || t.noOverview}
               </p>
             </div>
 
@@ -240,7 +242,7 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
             <div>
               <h2 className="mb-3 flex items-center gap-2 text-xl font-semibold">
                 <PlayCircle className="h-5 w-5 text-primary" />
-                Trailer
+                {t.trailer}
               </h2>
               {trailerUrl ? (
                 <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
@@ -260,9 +262,9 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
                   <CardContent className="flex flex-col items-center justify-center gap-3 py-10 text-center">
                     <PlayCircle className="h-10 w-10 text-muted-foreground/50" />
                     <div>
-                      <p className="font-medium">Trailer not available</p>
+                      <p className="font-medium">{t.trailerNotAvailable}</p>
                       <p className="text-sm text-muted-foreground">
-                        TMDB does not have a playable trailer for this movie yet.
+                        {t.trailerUnavailableText}
                       </p>
                     </div>
                   </CardContent>
@@ -274,24 +276,24 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {director && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Director</p>
+                  <p className="text-sm text-muted-foreground">{t.director}</p>
                   <p className="font-medium">{director.name}</p>
                 </div>
               )}
               {movie.budget > 0 && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Budget</p>
+                  <p className="text-sm text-muted-foreground">{t.budget}</p>
                   <p className="font-medium">{formatCurrency(movie.budget)}</p>
                 </div>
               )}
               {movie.revenue > 0 && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Revenue</p>
+                  <p className="text-sm text-muted-foreground">{t.revenue}</p>
                   <p className="font-medium">{formatCurrency(movie.revenue)}</p>
                 </div>
               )}
               <div>
-                <p className="text-sm text-muted-foreground">Status</p>
+                <p className="text-sm text-muted-foreground">{t.status}</p>
                 <p className="font-medium">{movie.status}</p>
               </div>
             </div>
@@ -303,7 +305,7 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
           <div className="mt-12">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <Users className="h-6 w-6" />
-              Top Cast
+              {t.topCast}
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {mainCast.map((actor) => (
@@ -338,7 +340,7 @@ export function MovieDetail({ movieId, onBack, onMovieClick }: MovieDetailProps)
           <div className="mt-12">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <TrendingUp className="h-6 w-6" />
-              Similar Movies
+              {t.similarMovies}
             </h2>
             <MovieList
               movies={similarMovies}

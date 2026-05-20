@@ -23,6 +23,7 @@ import {
 } from "@/lib/tmdb";
 import type { Movie } from "@/types/movie";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type Category = "popular" | "top-rated" | "upcoming" | "now-playing";
 
@@ -33,6 +34,7 @@ type ViewState =
 
 function App() {
   const { language } = useLanguage();
+  const t = useTranslation();
   const [view, setView] = useState<ViewState>({ type: "home", category: "popular" });
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -125,19 +127,19 @@ function App() {
 
   const getPageTitle = () => {
     if (view.type === "search") {
-      return `Search Results for "${view.query}"`;
+      return t.searchResultsFor(view.query);
     }
     const category = getCategoryFromView(view);
     switch (category) {
       case "top-rated":
-        return "Top Rated Movies";
+        return t.topRatedMovies;
       case "upcoming":
-        return "Upcoming Movies";
+        return t.upcomingMovies;
       case "now-playing":
-        return "Now Playing";
+        return t.nowPlaying;
       case "popular":
       default:
-        return "Popular Movies";
+        return t.popularMovies;
     }
   };
 
@@ -188,12 +190,10 @@ function App() {
               <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-primary/20 to-primary/5 p-8 md:p-12">
                 <div className="relative z-10 max-w-2xl">
                   <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                    Discover Your Next Favorite Movie
+                    {t.heroTitle}
                   </h1>
                   <p className="text-lg text-muted-foreground mb-6">
-                    Browse thousands of movies, from timeless classics to the latest
-                    blockbusters. Find ratings, reviews, and cast information all in one
-                    place.
+                    {t.heroText}
                   </p>
                   <div className="flex flex-wrap gap-3">
                     <Button
@@ -201,21 +201,21 @@ function App() {
                       variant="default"
                     >
                       <TrendingUp className="h-4 w-4 mr-2" />
-                      Popular
+                      {t.popular}
                     </Button>
                     <Button
                       onClick={() => handleNavigate("top-rated")}
                       variant="outline"
                     >
                       <Star className="h-4 w-4 mr-2" />
-                      Top Rated
+                      {t.topRated}
                     </Button>
                     <Button
                       onClick={() => handleNavigate("upcoming")}
                       variant="outline"
                     >
                       <Calendar className="h-4 w-4 mr-2" />
-                      Upcoming
+                      {t.upcoming}
                     </Button>
                   </div>
                 </div>
@@ -229,7 +229,7 @@ function App() {
             <h1 className="text-3xl font-bold mb-2">{getPageTitle()}</h1>
             {view.type === "search" && totalResults > 0 && (
               <p className="text-muted-foreground">
-                Found {totalResults.toLocaleString()} results
+                {t.foundResults(totalResults.toLocaleString())}
               </p>
             )}
           </div>
@@ -246,19 +246,19 @@ function App() {
               <TabsList className="grid w-full max-w-md grid-cols-4">
                 <TabsTrigger value="popular">
                   <TrendingUp className="h-4 w-4 mr-2 hidden sm:inline" />
-                  Popular
+                  {t.popular}
                 </TabsTrigger>
                 <TabsTrigger value="top-rated">
                   <Star className="h-4 w-4 mr-2 hidden sm:inline" />
-                  Top Rated
+                  {t.topRated}
                 </TabsTrigger>
                 <TabsTrigger value="upcoming">
                   <Calendar className="h-4 w-4 mr-2 hidden sm:inline" />
-                  Upcoming
+                  {t.upcoming}
                 </TabsTrigger>
                 <TabsTrigger value="now-playing">
                   <Play className="h-4 w-4 mr-2 hidden sm:inline" />
-                  Now Playing
+                  {t.nowPlaying}
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -268,11 +268,11 @@ function App() {
           {error && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <AlertCircle className="h-16 w-16 text-destructive/50 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Error Loading Movies</h3>
+              <h3 className="text-lg font-semibold mb-2">{t.errorLoadingMovies}</h3>
               <p className="text-muted-foreground mb-4 max-w-md">{error}</p>
               <Button onClick={fetchMovies}>
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Try Again
+                {t.tryAgain}
               </Button>
             </div>
           )}
@@ -286,8 +286,8 @@ function App() {
                 onMovieClick={handleMovieClick}
                 emptyMessage={
                   view.type === "search"
-                    ? `No movies found for "${view.query}"`
-                    : "No movies available"
+                    ? t.noMoviesFoundFor(view.query)
+                    : t.noMoviesAvailable
                 }
               />
 
@@ -307,7 +307,7 @@ function App() {
         <footer className="border-t mt-20 py-8">
           <div className="container mx-auto px-4 text-center text-muted-foreground">
             <p className="text-sm">
-              Data provided by{" "}
+              {t.dataProvidedBy}{" "}
               <a
                 href="https://www.themoviedb.org/"
                 target="_blank"
@@ -318,7 +318,7 @@ function App() {
               </a>
             </p>
             <p className="text-xs mt-2">
-              This product uses the TMDB API but is not endorsed or certified by TMDB.
+              {t.tmdbDisclaimer}
             </p>
           </div>
         </footer>

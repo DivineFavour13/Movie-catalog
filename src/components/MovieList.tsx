@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Film } from "lucide-react";
 import type { Movie } from "@/types/movie";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface MovieListProps {
   movies: Movie[];
@@ -15,8 +16,10 @@ export function MovieList({
   movies,
   isLoading = false,
   onMovieClick,
-  emptyMessage = "No movies found",
+  emptyMessage,
 }: MovieListProps) {
+  const t = useTranslation();
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
@@ -36,10 +39,10 @@ export function MovieList({
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <Film className="h-16 w-16 text-muted-foreground/50 mb-4" />
         <h3 className="text-lg font-semibold text-muted-foreground">
-          {emptyMessage}
+          {emptyMessage ?? t.noMoviesFound}
         </h3>
         <p className="text-sm text-muted-foreground/70 mt-1">
-          Try adjusting your search or browse other categories
+          {t.emptyHint}
         </p>
       </div>
     );

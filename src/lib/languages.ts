@@ -22,15 +22,15 @@ export const LANGUAGE_STORAGE_KEY = "movie-catalog-language";
 
 export const LANGUAGES: LanguageOption[] = [
   { code: "en-US", label: "English", nativeLabel: "English" },
-  { code: "es-ES", label: "Spanish", nativeLabel: "Espanol" },
-  { code: "fr-FR", label: "French", nativeLabel: "Francais" },
+  { code: "es-ES", label: "Spanish", nativeLabel: "Español" },
+  { code: "fr-FR", label: "French", nativeLabel: "Français" },
   { code: "de-DE", label: "German", nativeLabel: "Deutsch" },
   { code: "it-IT", label: "Italian", nativeLabel: "Italiano" },
-  { code: "pt-BR", label: "Portuguese", nativeLabel: "Portugues" },
-  { code: "ja-JP", label: "Japanese", nativeLabel: "Japanese" },
-  { code: "ko-KR", label: "Korean", nativeLabel: "Korean" },
-  { code: "zh-CN", label: "Chinese", nativeLabel: "Chinese" },
-  { code: "hi-IN", label: "Hindi", nativeLabel: "Hindi" },
+  { code: "pt-BR", label: "Portuguese", nativeLabel: "Português" },
+  { code: "ja-JP", label: "Japanese", nativeLabel: "日本語" },
+  { code: "ko-KR", label: "Korean", nativeLabel: "한국어" },
+  { code: "zh-CN", label: "Chinese", nativeLabel: "中文" },
+  { code: "hi-IN", label: "Hindi", nativeLabel: "हिन्दी" },
 ];
 
 export const isLanguageCode = (value: string): value is LanguageCode =>

@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelect } from "@/components/LanguageSelect";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type NavigationPage = "home" | "popular" | "top-rated" | "upcoming";
 
@@ -32,6 +33,8 @@ interface SearchBoxProps {
   onSuggestionClose: () => void;
   className?: string;
   inputClassName?: string;
+  loadingLabel: string;
+  placeholder: string;
 }
 
 function SearchBox({
@@ -48,6 +51,8 @@ function SearchBox({
   onSuggestionClose,
   className,
   inputClassName,
+  loadingLabel,
+  placeholder,
 }: SearchBoxProps) {
   const showSuggestions =
     isSuggestionsOpen &&
@@ -60,7 +65,7 @@ function SearchBox({
         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="Search movies..."
+          placeholder={placeholder}
           value={localQuery}
           onChange={(e) => onQueryChange(e.target.value)}
           onFocus={onSuggestionOpen}
@@ -75,7 +80,7 @@ function SearchBox({
           <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-md border bg-background shadow-lg">
             {isLoadingSuggestions ? (
               <div className="px-4 py-3 text-sm text-muted-foreground">
-                Looking for matches...
+                {loadingLabel}
               </div>
             ) : (
               <div className="py-1">
@@ -115,6 +120,7 @@ export function Header({
   currentPage = "home",
 }: HeaderProps) {
   const { language, languageOption } = useLanguage();
+  const t = useTranslation();
   const [localQuery, setLocalQuery] = useState(searchQuery);
   const [isScrolled, setIsScrolled] = useState(false);
   const [suggestions, setSuggestions] = useState<Movie[]>([]);
@@ -178,10 +184,10 @@ export function Header({
   };
 
   const navItems = [
-    { key: "home" as const, label: "Home" },
-    { key: "popular" as const, label: "Popular" },
-    { key: "top-rated" as const, label: "Top Rated" },
-    { key: "upcoming" as const, label: "Upcoming" },
+    { key: "home" as const, label: t.home },
+    { key: "popular" as const, label: t.popular },
+    { key: "top-rated" as const, label: t.topRated },
+    { key: "upcoming" as const, label: t.upcoming },
   ];
 
   return (
@@ -218,6 +224,8 @@ export function Header({
           onSuggestionSelect={handleSuggestionSelect}
           onSuggestionOpen={() => setIsSuggestionsOpen(true)}
           onSuggestionClose={() => setIsSuggestionsOpen(false)}
+          loadingLabel={t.lookingForMatches}
+          placeholder={t.searchPlaceholder}
           className="flex min-w-0 flex-1 items-center justify-center gap-2 sm:hidden"
           inputClassName="h-9 min-w-0 pl-9"
         />
@@ -243,7 +251,7 @@ export function Header({
           isLoadingSuggestions={isLoadingSuggestions}
           isSuggestionsOpen={isSuggestionsOpen}
           suggestions={suggestions}
-          submitLabel="Search"
+          submitLabel={t.search}
           onQueryChange={(query) => {
             setLocalQuery(query);
             setIsSuggestionsOpen(true);
@@ -252,6 +260,8 @@ export function Header({
           onSuggestionSelect={handleSuggestionSelect}
           onSuggestionOpen={() => setIsSuggestionsOpen(true)}
           onSuggestionClose={() => setIsSuggestionsOpen(false)}
+          loadingLabel={t.lookingForMatches}
+          placeholder={t.searchPlaceholder}
           className="flex-1 max-w-md hidden sm:flex items-center gap-2"
           inputClassName="pl-9 w-full"
         />
@@ -272,9 +282,9 @@ export function Header({
             <div className="flex flex-col gap-6 mt-8">
               <div className="flex items-center justify-between gap-3 border-b pb-4">
                 <div>
-                  <p className="text-sm font-medium">Appearance</p>
+                  <p className="text-sm font-medium">{t.appearance}</p>
                   <p className="text-xs text-muted-foreground">
-                    Choose your preferred theme
+                    {t.chooseTheme}
                   </p>
                 </div>
                 <ThemeToggle />
@@ -282,9 +292,9 @@ export function Header({
 
               <div className="flex flex-col gap-3 border-b pb-4">
                 <div>
-                  <p className="text-sm font-medium">Language</p>
+                  <p className="text-sm font-medium">{t.language}</p>
                   <p className="text-xs text-muted-foreground">
-                    Showing movie data in {languageOption.label}
+                    {t.showingMovieDataIn(languageOption.nativeLabel)}
                   </p>
                 </div>
                 <LanguageSelect />
